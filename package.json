@@ -1,0 +1,20 @@
+{
+  "name": "encours",
+  "version": "0.0.1",
+  "description": "test framework",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "packages/runtime"
+  ],
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "npx http-server . -0 ./examples/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
