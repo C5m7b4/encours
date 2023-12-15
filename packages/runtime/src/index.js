@@ -1,9 +1,9 @@
 import { createElement } from './h';
-import { render } from './dom/mount-dom';
+import { createApp } from './dom/mount-dom';
 
 const encours = {
   createElement,
-  render,
+  createApp,
 };
 
 export { encours };
