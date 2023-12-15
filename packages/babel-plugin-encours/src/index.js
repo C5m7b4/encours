@@ -50,6 +50,12 @@ module.exports = function (babel) {
           if (child.type === "JSXElement") {
             childArray.push(child);
           }
+          if (child.type === "JSXExpressionContainer") {
+            const result = convertLogicalExpression(child);
+            if (result) {
+              childArray.push(result);
+            }
+          }
           if (child.type === "JSXText") {
             child.value = child.value.replace("\n", "").trim();
             if (!child.value.includes("\n") && child.value.length > 0) {
@@ -63,6 +69,40 @@ module.exports = function (babel) {
       },
     },
   };
+
+  function convertLogicalExpression(node) {
+    const left = node.expression.left.left.value;
+    const right = node.expression.left.right.value;
+    const operator = node.expression.left.operator;
+    switch (operator) {
+      case "===":
+        return left === right ? node.expression.right : null;
+        break;
+      case "==":
+        return left == right ? node.expression.right : null;
+        break;
+      case "!=":
+        return left != right ? node.expression.right : null;
+        break;
+      case "!==":
+        return left !== right ? node.expression.right : null;
+        break;
+      case ">":
+        return left > right ? node.expression.right : null;
+        break;
+      case ">=":
+        return left >= right ? node.expression.right : null;
+        break;
+      case "<":
+        return left < right ? node.expression.right : null;
+        break;
+      case "<=":
+        return left <= right ? node.expression.right : null;
+        break;
+      default:
+        return null;
+    }
+  }
 
   function convertAttribute(node, addArrow) {
     var value = convertAttributeValue(node.value || t.booleanLiteral(true));
