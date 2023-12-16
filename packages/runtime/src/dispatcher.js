@@ -26,7 +26,6 @@ export class Dispatcher {
     } else {
       console.warn(`No handlers for the command ${commandName}`);
     }
-
     this.#afterHandlers.forEach((handler) => handler(commandName, payload));
   }
 

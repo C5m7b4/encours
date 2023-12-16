@@ -1,0 +1,23 @@
+{
+  "name": "todos_v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel src/index.html --open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "babel-plugin-encours": "^0.0.9",
+    "babel-plugin-encours-jsx": "^0.0.1",
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-clean-dist": "^0.0.6"
+  },
+  "dependencies": {
+    "encours": "^0.0.9"
+  }
+}

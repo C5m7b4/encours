@@ -1,0 +1,3 @@
+{
+    "plugins": ["babel-plugin-encours", "babel-plugin-encours-jsx"]
+}

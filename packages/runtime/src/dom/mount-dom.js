@@ -3,6 +3,7 @@ import { setAttributes } from '../utils/attributes';
 import { extractChildren } from '../utils/arrays';
 import { destroyDom } from './destroy-dom';
 import { Dispatcher } from '../dispatcher';
+import { patchDom } from './patch-dom';
 
 export function createApp({ state, view, reducers = {} }) {
   let parentEl = null;
@@ -25,17 +26,20 @@ export function createApp({ state, view, reducers = {} }) {
   }
 
   function renderApp() {
-    if (vdom) {
-      destroyDom(vdom);
-    }
-    vdom = view(state, emit);
-    render(vdom, parentEl);
+    // if (vdom) {
+    //   destroyDom(vdom);
+    // }
+    const newVdom = view(state, emit);
+    //render(vdom, parentEl);
+    vdom = patchDom(vdom, newVdom, parentEl);
   }
 
   return {
     mount(_parentEl) {
       parentEl = _parentEl;
-      renderApp();
+      //renderApp();
+      vdom = view(state, emit);
+      render(vdom, parentEl);
     },
     unmount() {
       destroyDom(vdom);
@@ -67,16 +71,16 @@ export function mountDom(vdom, parentEl) {
   }
 }
 
-function createTextNode(vdom, parentEl) {
+function createTextNode(vdom, parentEl, index) {
   const { value } = vdom;
 
   const textNode = document.createTextNode(value);
   vdom.el = textNode;
 
-  parentEl.append(textNode);
+  insert(textNode, parentEl, index);
 }
 
-function createElementNode(vdom, parentEl) {
+function createElementNode(vdom, parentEl, index) {
   const { tag, props } = vdom;
   let { children } = vdom;
 
@@ -87,11 +91,45 @@ function createElementNode(vdom, parentEl) {
   vdom.el = element;
 
   children.forEach((child) => mountDom(child, element));
-  parentEl.append(element);
+  insert(element, parentEl, index);
 }
 
 function addProps(el, props = {}, vdom) {
   if (!props) return;
   const { ...attrs } = props;
   setAttributes(el, attrs, vdom);
+}
+
+function insert(el, parentEl, index) {
+  // If index is null or undefined, simply append.
+  // Note the usage of == instead of ===.
+  if (index == null) {
+    parentEl.append(el);
+    return;
+  }
+  if (index < 0) {
+    throw new Error(`Index must be a positive integer, got ${index}`);
+  }
+  const children = parentEl.childNodes;
+  if (index >= children.length) {
+    parentEl.append(el);
+  } else {
+    parentEl.insertBefore(el, children[index]);
+  }
+}
+
+export function mountDOM(vdom, parentEl, index) {
+  switch (vdom.type) {
+    case DOM_TYPES.TEXT: {
+      createTextNode(vdom, parentEl, index);
+      break;
+    }
+    case DOM_TYPES.ELEMENT: {
+      createElementNode(vdom, parentEl, index);
+      break;
+    }
+    default: {
+      throw new Error(`Can't mount DOM of type: ${vdom.type}`);
+    }
+  }
 }

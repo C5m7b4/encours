@@ -32,7 +32,7 @@ export function setAttributes(el, attrs, vdom) {
       const eventName = name.toLowerCase().slice(2);
       events.push({ eventName, value });
     } else {
-      setAttributes(el, name, value);
+      setAttribute(el, name, value);
     }
 
     vdom.listeners = addEventListeners(events, el);
